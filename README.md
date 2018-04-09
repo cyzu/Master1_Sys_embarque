@@ -1,2 +1,12 @@
-# Master1_Sys_embarque
-UE Systemes et informatiques embarqués 
+# Master1 Systèmes Embarqués
+Université Nice Sophia-Antipolis
+
+### Professeurs
+  - Amar BOUALI
+  - Frédéric MALLET
+
+### Projet NuSMV
+#### Exercice 1
+
+
+### Projet Android
