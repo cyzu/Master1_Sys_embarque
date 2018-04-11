@@ -16,9 +16,9 @@
 MODULE pedestrian(car_red_bool, car_yellow_bool)
 VAR
     light : {red, green};
-    
+
 ASSIGN
-    init(light) := green; 
+    init(light) := green;
     next(light) := case
                         car_red_bool : red;
                         car_yellow_bool : green;
@@ -32,9 +32,9 @@ ASSIGN
 ---------------------------------------------------
 
 MODULE counter_tick(time, activate)
-VAR 
+VAR
     tick : 1..time;
-    
+
 ASSIGN
     init(tick) := 1;
     next(tick) := case
@@ -50,17 +50,17 @@ DEFINE
 -- module main
 -- change le feu de voiture lorsque le compteur atteint le temps voulu
 ---------------------------------------------------
-    
+
 MODULE main
-VAR 
+VAR
     car_light : {red, yellow, green};
-    
+
     red_timer : counter_tick(5, car_light = red);
     green_timer : counter_tick(10, car_light = green);
     yellow_timer : counter_tick(2, car_light = yellow);
-    
+
     pedestrian_light : pedestrian(red_timer.finish, yellow_timer.finish);
-    
+
 ASSIGN
     init(car_light) := red;
     next(car_light) := case
@@ -69,16 +69,16 @@ ASSIGN
                             yellow_timer.finish : red;
                             TRUE : car_light;
                        esac;
-     
+
      -- Expressions LTL sureté et vivacité
      LTLSPEC G (pedestrian_light.light = green -> car_light = red) & G (car_light = green -> pedestrian_light.light = red)
      LTLSPEC F (car_light = green) <-> F (car_light = red)
      LTLSPEC F (pedestrian_light.light = green) <-> F (pedestrian_light.light = red)
 
      -- Expressions CTL sureté et vivacité
-    CTLSPEC AG (pedestrian_light.light = green -> car_light = red) & AG (car_light = green -> pedestrian_light.light = red)
-    CTLSPEC AF (car_light = green) <-> AF (car_light = red)
-    CTLSPEC AF (pedestrian_light.light = green) <-> AF (pedestrian_light.light = red)
+     CTLSPEC AG (pedestrian_light.light = green -> car_light = red) & AG (car_light = green -> pedestrian_light.light = red)
+     CTLSPEC AF (car_light = green) <-> AF (car_light = red)
+     CTLSPEC AF (pedestrian_light.light = green) <-> AF (pedestrian_light.light = red)
 
 
 ---------------------------------------------------
