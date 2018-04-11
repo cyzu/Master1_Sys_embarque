@@ -1,4 +1,4 @@
-------------------------------------
+---------------------------------------------------
 -- Projet NuSMV
 -- Gérer les feux de piétons et feux de voiture
 -- en assurant la sureté et la vivacité
@@ -6,13 +6,13 @@
 -- Chloé Bensoussan
 -- Université Nice Sophia-Antipolis
 -- Master 1 Informatique
-------------------------------------
+---------------------------------------------------
 
 
-------------------------------------
+---------------------------------------------------
 -- module pedestrian
 -- change le feu des pietons en fonction du feux de voiture
-------------------------------------
+---------------------------------------------------
 
 MODULE pedestrian(car_red_bool, car_yellow_bool)
 VAR
@@ -27,10 +27,10 @@ ASSIGN
                    esac;
 
 
-------------------------------------
+---------------------------------------------------
 -- module compteur de tick
 -- retourne VRAI si time ait atteint, FAUX sinon
-------------------------------------
+---------------------------------------------------
 
 MODULE counter_tick(time, activate)
 VAR 
@@ -47,10 +47,10 @@ DEFINE
     finish := tick = time;
 
 
-------------------------------------
+---------------------------------------------------
 -- module main
 -- change le feu de voiture lorsque le compteur atteint le temps voulu
-------------------------------------
+---------------------------------------------------
     
 MODULE main
 VAR 
@@ -73,10 +73,13 @@ ASSIGN
      
      -- Expressions LTL sureté et vivacité
      LTLSPEC G (pedestrian_light.light = green -> car_light = red)
-     -- LTLSPEC car_light = green -> (F (car_light = red) & H (car_light = red))
-     
+     LTLSPEC F (car_light = green) <-> F (car_light = red)
+     LTLSPEC F (pedestrian_light.light = green) <-> F (pedestrian_light.light = red)
 
-------------------------------------
+     -- Expressions CTL sureté et vivacité
+
+
+---------------------------------------------------
 -- EXECUTION
 -- ./NuSMV -int fichier.smv
 -- go
@@ -84,4 +87,4 @@ ASSIGN
 -- simulate -r -k pas
 -- show_trace -v
 -- quit
-------------------------------------
+---------------------------------------------------
