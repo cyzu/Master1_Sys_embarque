@@ -8,7 +8,6 @@
 -- Master 1 Informatique
 ---------------------------------------------------
 
-
 ---------------------------------------------------
 -- module pedestrian
 -- change le feu des pietons en fonction du feux de voiture
@@ -72,11 +71,14 @@ ASSIGN
                        esac;
      
      -- Expressions LTL sureté et vivacité
-     LTLSPEC G (pedestrian_light.light = green -> car_light = red)
+     LTLSPEC G (pedestrian_light.light = green -> car_light = red) & G (car_light = green -> pedestrian_light.light = red)
      LTLSPEC F (car_light = green) <-> F (car_light = red)
      LTLSPEC F (pedestrian_light.light = green) <-> F (pedestrian_light.light = red)
 
      -- Expressions CTL sureté et vivacité
+    CTLSPEC AG (pedestrian_light.light = green -> car_light = red) & AG (car_light = green -> pedestrian_light.light = red)
+    CTLSPEC AF (car_light = green) <-> AF (car_light = red)
+    CTLSPEC AF (pedestrian_light.light = green) <-> AF (pedestrian_light.light = red)
 
 
 ---------------------------------------------------
