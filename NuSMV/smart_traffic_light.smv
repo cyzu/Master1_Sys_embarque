@@ -1,14 +1,54 @@
 ---------------------------------------------------
 -- Projet NuSMV
 -- Gérer les feux de piétons et feux de voiture
--- en assurant la sureté et la vivacité
+-- en assurant la sureté et la vivacité des deux
 --
--- Version plus intelligente en ajoutant un bouton pour pieton
+-- Ajout du bouton de piéton
 --
 -- Chloé Bensoussan
 -- Université Nice Sophia-Antipolis
 -- Master 1 Informatique
 ---------------------------------------------------
+
+MODULE pedestrian(car_red_bool, car_light_red)
+VAR
+    light : {red, green};
+
+ASSIGN
+    init(light) := green;
+    next(light) := case
+                        car_red_bool : red;
+                        car_light_red : green;
+                        TRUE : light;
+                    esac;
+
+----------------------------------------------------------------
+-- MODULE gestion BOUTON DES PIETONS               
+-- Le bouton passe à vrai dès qu'il est appuyé
+-- on peut appuyer dessus autant qu'on veut, il restera vrai.
+-- Il repassera à faux dès que le feu de piétons passe au vert.
+----------------------------------------------------------------
+
+MODULE pedestrian_button(activate)
+VAR
+    state : boolean;
+    push : boolean;
+
+ASSIGN
+    init(push) := FALSE;
+    init(state) := FALSE;
+    next(state) := case
+                        activate : FALSE;
+                        push : TRUE;
+                        TRUE : state;
+                    esac;
+
+---------------------------------------------------
+-- MODULE COMPTEUR DE TICK
+-- pour les feux rouge et jaune
+-- retourne VRAI si time ait atteint, FAUX sinon
+---------------------------------------------------
+
 MODULE counter_tick(time, activate)
 VAR
     tick : 1..time;
@@ -23,6 +63,13 @@ ASSIGN
 DEFINE
     finish := tick = time;
 
+
+---------------------------------------------------
+-- MODULE COMPTEUR DE TICK MODIFIÉ
+-- pour le feu vert de voiture
+-- Lorsque le compteur atteint son temps (time)
+-- il restera au vert jusqu'a que button sera TRUE
+---------------------------------------------------
 
 MODULE counter_tick_green(time, activate, button)
 VAR
@@ -40,29 +87,42 @@ DEFINE
     finish := tick >= time;
 
 
+---------------------------------------------------
+-- MODULE MAIN
+-- le feu de piétons passera au vert si une personne
+-- appuie sur le bouton
+---------------------------------------------------
+
 MODULE main
 VAR
     car_light : {red, yellow, green};
 
     red_timer : counter_tick(5, car_light = red);
-    green_timer : counter_tick_green(10, car_light = green, button);
+    green_timer : counter_tick_green(10, car_light = green, button.state);
     yellow_timer : counter_tick(2, car_light = yellow);
 
-    button : boolean;
+    pedestrian_light : pedestrian(red_timer.finish, car_light = red);
+    button : pedestrian_button(pedestrian_light.light = green);
 ASSIGN
     init(car_light) := red;
     next(car_light) := case
                             red_timer.finish : green;
                             yellow_timer.finish : red;
-                            green_timer.finish & button : yellow;
+                            green_timer.finish & button.state : yellow;
                             TRUE : car_light;
                        esac;
 
-    init(button) := FALSE;
-    --next(button) := case
-                    --    !button : {TRUE, FALSE};
-                    --    TRUE : {TRUE, FALSE};
-                  --  esac;
+
+-- Expressions LTL sureté et vivacité
+LTLSPEC G (pedestrian_light.light = green -> car_light = red) & G (car_light = green -> pedestrian_light.light = red)
+LTLSPEC F (car_light = green) <-> F (car_light = red)
+LTLSPEC F (pedestrian_light.light = green) <-> F (pedestrian_light.light = red)
+
+-- Expressions CTL sureté et vivacité
+CTLSPEC AG (pedestrian_light.light = green -> car_light = red) & AG (car_light = green -> pedestrian_light.light = red)
+CTLSPEC AF (car_light = green) <-> AF (car_light = red)
+CTLSPEC AF (pedestrian_light.light = green) <-> AF (pedestrian_light.light = red)
+
 ---------------------------------------------------
 -- EXECUTION
 -- ./NuSMV -int fichier.smv
