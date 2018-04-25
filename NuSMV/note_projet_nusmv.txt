@@ -2,7 +2,7 @@
 #### PROJET NuSMV ####
 # Deadline : 28/05 23:59
 # A rendre : 2 versions du feu de croisement
-#               - description succinte (2 pages max)
+#               - description succincte (2 pages max)
                 - code NuSMV
                 - P1 et P2    LTL & CTL  (dans le même fichier)
                 - traces de test pour P1 et P2
