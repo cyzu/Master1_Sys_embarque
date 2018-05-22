@@ -1,0 +1,72 @@
+*** This is NuSMV 2.6.0 (compiled on Wed Oct 14 15:36:56 2015)
+*** Enabled addons are: compass
+*** For more information on NuSMV see <http://nusmv.fbk.eu>
+*** or email to <nusmv-users@list.fbk.eu>.
+*** Please report bugs to <Please report bugs to <nusmv-users@fbk.eu>>
+
+*** Copyright (c) 2010-2014, Fondazione Bruno Kessler
+
+*** This version of NuSMV is linked to the CUDD library version 2.4.1
+*** Copyright (c) 1995-2004, Regents of the University of Colorado
+
+*** This version of NuSMV is linked to the MiniSat SAT solver.
+*** See http://minisat.se/MiniSat.html
+*** Copyright (c) 2003-2006, Niklas Een, Niklas Sorensson
+*** Copyright (c) 2007-2010, Niklas Sorensson
+
+***************************************************************************************************
+** Vérification des expressions avec le code all_red.smv :
+** Le feu de voiture est toujours rouge.
+** Le feu de piéton est toujours rouge aussi.
+**
+** Donc les expressions de suretés doivent être VRAIS, mais les expressions de vivacités FAUSSES
+**
+****************************************************************************************************
+
+**************************** SURETE ****************************
+
+-- specification (AG (pedestrian_light = green -> car_light = red) & AG (car_light = green -> pedestrian_light = red))  is true
+-- specification ( G (pedestrian_light = green -> car_light = red) &  G (car_light = green -> pedestrian_light = red))  is true
+
+
+***************************** VIVACITE **************************
+
+-- specification (AF car_light = green <-> AF car_light = red)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: CTL Counterexample
+Trace Type: Counterexample
+  -- Loop starts here
+  -> State: 1.1 <-
+    car_light = red
+    pedestrian_light = red
+  -> State: 1.2 <-
+
+-- specification (AF pedestrian_light = green <-> AF pedestrian_light = red)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: CTL Counterexample
+Trace Type: Counterexample
+  -- Loop starts here
+  -> State: 2.1 <-
+    car_light = red
+    pedestrian_light = red
+  -> State: 2.2 <-
+
+-- specification ( F car_light = green <->  F car_light = red)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: LTL Counterexample
+Trace Type: Counterexample
+  -- Loop starts here
+  -> State: 3.1 <-
+    car_light = red
+    pedestrian_light = red
+  -> State: 3.2 <-
+
+-- specification ( F pedestrian_light = green <->  F pedestrian_light = red)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: LTL Counterexample
+Trace Type: Counterexample
+  -- Loop starts here
+  -> State: 4.1 <-
+    car_light = red
+    pedestrian_light = red
+  -> State: 4.2 <-

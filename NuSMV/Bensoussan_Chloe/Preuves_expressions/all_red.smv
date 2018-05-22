@@ -1,0 +1,32 @@
+---------------------------------------------------
+-- Projet NuSMV
+-- Test des expressions
+-- Gestion des sécurité VRAI mais vivacité FAUX
+--
+-- Chloé Bensoussan
+-- Université Nice Sophia-Antipolis
+-- Master 1 Informatique
+---------------------------------------------------
+
+MODULE main
+VAR
+      car_light : {red, yellow, green};
+      pedestrian_light :{red, green};
+
+ASSIGN
+      init(car_light) := red;
+      init(pedestrian_light) := red;
+
+      next(car_light) :=  car_light;
+      next(pedestrian_light) := pedestrian_light;
+
+-- Expressions suretés
+LTLSPEC G (pedestrian_light = green -> car_light = red) & G (car_light = green -> pedestrian_light = red)
+CTLSPEC AG (pedestrian_light = green -> car_light = red) & AG (car_light = green -> pedestrian_light = red)
+
+-- Expressions vivacités
+LTLSPEC F (car_light = green) <-> F (car_light = red)
+LTLSPEC F (pedestrian_light = green) <-> F (pedestrian_light = red)
+
+CTLSPEC AF (car_light = green) <-> AF (car_light = red)
+CTLSPEC AF (pedestrian_light = green) <-> AF (pedestrian_light = red)
