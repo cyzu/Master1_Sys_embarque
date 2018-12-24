@@ -30,5 +30,3 @@ Le feu de voiture reste vert pendant un temps minimum. S'il n'y a pas de piéton
 Dans ces deux exercices, il faut respecter deux propriétés importantes même dans la vie réelle :
   - Sureté : on doit s'assurer que les deux feux ne deviennent jamais vert en même temps
   - Vivacité : assurer que le carrefour fonctionne correctement, et que les feux alternent pour faire vivre le carrefour
-
-### Projet Android
